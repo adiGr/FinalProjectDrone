@@ -123,3 +123,106 @@ class TestLocation(TestCase):
         #check character number -> convert to the number
         loc.set_altitude(CHAR_NUMBER)
         self.assertEqual(loc.get_altitude(),float(CHAR_NUMBER))
+		
+	  def test_equalsTo(self):
+        loc = Location()
+        loc1 = Location()
+        #---------------latitude--------------------#
+        self.assertTrue(loc.equalsTo(loc1))
+        loc1.set_latitude(LIMIT_NUMBER_LATITUDE)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc.set_latitude(LIMIT_NUMBER_LATITUDE)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_latitude(LIMIT_NUMBER_LATITUDE+1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc1.set_latitude(LIMIT_NUMBER_LATITUDE+1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_latitude(-LIMIT_NUMBER_LATITUDE)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_latitude(-LIMIT_NUMBER_LATITUDE)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_latitude(-LIMIT_NUMBER_LATITUDE-1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc1.set_latitude(-LIMIT_NUMBER_LATITUDE-1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_latitude(CHARACTER)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_latitude(CHARACTER)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_latitude(CHAR_NUMBER)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_latitude(CHAR_NUMBER)
+        self.assertTrue(loc.equalsTo(loc1))
+        #print "%f   %f " % ( loc.longitude, loc.latitude)
+        #print "%f   %f " % ( loc1.longitude, loc1.latitude)
+        #---------------longitude-------------------------#
+        loc1.set_longitude(LIMIT_NUMBER_LONGITUDE)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc.set_longitude(LIMIT_NUMBER_LONGITUDE)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_longitude(LIMIT_NUMBER_LONGITUDE+1)
+        #print "%f   %f " % ( loc.longitude, loc.latitude)
+        #print "%f   %f " % ( loc1.longitude, loc1.latitude)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc1.set_longitude(LIMIT_NUMBER_LONGITUDE+1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_longitude(-LIMIT_NUMBER_LONGITUDE)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_longitude(-LIMIT_NUMBER_LONGITUDE)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_longitude(-LIMIT_NUMBER_LONGITUDE-1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc1.set_longitude(-LIMIT_NUMBER_LONGITUDE-1)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_longitude(CHARACTER)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_longitude(CHARACTER)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_longitude(CHAR_NUMBER)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_longitude(CHAR_NUMBER)
+        self.assertTrue(loc.equalsTo(loc1))
+        #-------------altitude--------------------#
+        loc.set_altitude(CHARACTER)
+        self.assertTrue(loc.equalsTo(loc1))
+        loc.set_altitude(CHAR_NUMBER)
+        self.assertFalse(loc.equalsTo(loc1))
+        loc1.set_altitude(CHAR_NUMBER)
+        self.assertTrue(loc.equalsTo(loc1))
+
+    def test_setFromVehicleLocation(self):
+        #test Vehicle and after that check the location
+        self.fail()
+
+    def test_setFromJSONLocation(self):
+        # Server connection
+        lat =10
+        lon=10
+        alt=10
+        try:
+            req = requests.post("http://agri-airscort-server.meteor.com/api/agri/drone/location/drone/0/mission/1/location/35/32/2/battery/51.3",  json={"key": "value"})
+            server_response = json.loads(req.text) #Convert server response to json
+            lat = server_response['latitude']
+            lon = server_response['longitude']
+            alt = server_response['altitude']
+        except Exception:
+            pass
+        self.assertTrue(lat == 0 and lon ==0 and alt == 0)
+
+    def test_displayLocation(self):
+        loc = Location()
+        loc.displayLocation()
+        loc= Location(LIMIT_NUMBER_LATITUDE,0,0)
+        loc.displayLocation()
+        loc=Location(-LIMIT_NUMBER_LATITUDE,0,0)
+        loc.displayLocation()
+        loc=Location(LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE,0)
+        loc.displayLocation()
+        loc=Location(LIMIT_NUMBER_LATITUDE,-LIMIT_NUMBER_LONGITUDE,0)
+        loc.displayLocation()
+        loc=Location(-LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE,0)
+        loc.displayLocation()
+        loc=Location(-LIMIT_NUMBER_LATITUDE,-LIMIT_NUMBER_LONGITUDE,0)
+        loc.displayLocation()
+        self.assertTrue(1)
+
