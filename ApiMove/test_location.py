@@ -124,7 +124,7 @@ class TestLocation(TestCase):
         loc.set_altitude(CHAR_NUMBER)
         self.assertEqual(loc.get_altitude(),float(CHAR_NUMBER))
 		
-	  def test_equalsTo(self):
+	def test_equalsTo(self):
         loc = Location()
         loc1 = Location()
         #---------------latitude--------------------#
