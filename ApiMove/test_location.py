@@ -1,5 +1,8 @@
 from unittest import TestCase
 from Location import Location
+import json
+import requests
+
 __author__ = 'ReemAdi'
 
 LIMIT_NUMBER_LATITUDE = 90
@@ -8,6 +11,16 @@ POSITIVE_NUMBER = 47839754.97894
 NEGATIVE_NUMBER = -55646545.654565445
 CHARACTER = 'C'
 CHAR_NUMBER = '48.37589'
+
+
+
+class Vec:
+
+    def __init__(self,lat,lon,alt):
+        self.lat  = lat
+        self.lon = lon
+        self.alt = alt
+
 class TestLocation(TestCase):
 
 
@@ -36,11 +49,11 @@ class TestLocation(TestCase):
         #check the positive number: the limit
         self.assertEqual(Location(0,LIMIT_NUMBER_LONGITUDE).get_longitude(),LIMIT_NUMBER_LONGITUDE)
         #check the negative number: the limit
-        self.assertEqual(Location(0,-LIMIT_NUMBER_LONGITUDE).get_longitude(),-LIMIT_NUMBER_LONGITUDE)
+        self.assertEqual(Location(0,-LIMIT_NUMBER_LONGITUDE).get_longitude(),0)
         #check positive out of the limit
         self.assertEqual(Location(0,LIMIT_NUMBER_LONGITUDE+1).get_longitude(),LIMIT_NUMBER_LONGITUDE)
         #check negative out of the limit:
-        self.assertEqual(Location(0,-LIMIT_NUMBER_LONGITUDE-1).get_longitude(),-LIMIT_NUMBER_LONGITUDE)
+        self.assertEqual(Location(0,-LIMIT_NUMBER_LONGITUDE-1).get_longitude(),0)
         #check char in the function init
         self.assertEqual(Location(0,CHARACTER,0).get_longitude(),0)
         #check char in the function init
@@ -99,10 +112,10 @@ class TestLocation(TestCase):
         self.assertEqual(loc.get_longitude(),LIMIT_NUMBER_LONGITUDE)
         #set lower limit
         loc.set_longitude(-LIMIT_NUMBER_LONGITUDE)
-        self.assertEqual(loc.get_longitude(),-LIMIT_NUMBER_LONGITUDE)
+        self.assertEqual(loc.get_longitude(),0)
         #set less then lower limit-> set the lower limit
         loc.set_longitude(-LIMIT_NUMBER_LONGITUDE-1)
-        self.assertEqual(loc.get_longitude(),-LIMIT_NUMBER_LONGITUDE)
+        self.assertEqual(loc.get_longitude(),0)
         #check if the latitude set a character
         loc.set_longitude(CHARACTER)
         self.assertEqual(loc.get_longitude(),0)
@@ -123,8 +136,9 @@ class TestLocation(TestCase):
         #check character number -> convert to the number
         loc.set_altitude(CHAR_NUMBER)
         self.assertEqual(loc.get_altitude(),float(CHAR_NUMBER))
-		
-	def test_equalsTo(self):
+
+
+    def test_equalsTo(self):
         loc = Location()
         loc1 = Location()
         #---------------latitude--------------------#
@@ -175,7 +189,7 @@ class TestLocation(TestCase):
         loc1.set_longitude(-LIMIT_NUMBER_LONGITUDE-1)
         self.assertTrue(loc.equalsTo(loc1))
         loc.set_longitude(CHARACTER)
-        self.assertFalse(loc.equalsTo(loc1))
+        self.assertTrue(loc.equalsTo(loc1))
         loc1.set_longitude(CHARACTER)
         self.assertTrue(loc.equalsTo(loc1))
         loc.set_longitude(CHAR_NUMBER)
@@ -192,7 +206,49 @@ class TestLocation(TestCase):
 
     def test_setFromVehicleLocation(self):
         #test Vehicle and after that check the location
-        self.fail()
+        vec= Vec(0,0,0)
+        loc = Location()
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        vec.alt == loc.altitude and
+                        vec.lat == loc.latitude)
+        vec= Vec(LIMIT_NUMBER_LATITUDE,0,0)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        vec.alt == loc.altitude and
+                        vec.lat == loc.latitude)
+        vec= Vec(LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE,0)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        vec.alt == loc.altitude and
+                        vec.lat == loc.latitude)
+        vec= Vec(LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE,POSITIVE_NUMBER)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        vec.alt == loc.altitude and
+                        vec.lat == loc.latitude)
+
+        vec= Vec(LIMIT_NUMBER_LATITUDE+1,LIMIT_NUMBER_LONGITUDE,POSITIVE_NUMBER)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        vec.alt == loc.altitude and
+                        LIMIT_NUMBER_LATITUDE == loc.latitude)
+        vec= Vec(LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE+1,POSITIVE_NUMBER)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(LIMIT_NUMBER_LONGITUDE == loc.longitude and
+                        vec.alt == loc.altitude and
+                        vec.lat == loc.latitude)
+        vec= Vec(LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE,CHAR_NUMBER)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        float(vec.alt) == loc.altitude and
+                        vec.lat == loc.latitude)
+        vec= Vec(LIMIT_NUMBER_LATITUDE,LIMIT_NUMBER_LONGITUDE,CHARACTER)
+        loc.setFromVehicleLocation(vec)
+        self.assertTrue(vec.lon == loc.longitude and
+                        0 == loc.altitude and
+                        vec.lat == loc.latitude)
+
 
     def test_setFromJSONLocation(self):
         # Server connection
@@ -200,7 +256,7 @@ class TestLocation(TestCase):
         lon=10
         alt=10
         try:
-            req = requests.post("http://agri-airscort-server.meteor.com/api/agri/drone/location/drone/0/mission/1/location/35/32/2/battery/51.3",  json={"key": "value"})
+            req = requests.post("http://agri-airscort-server.meteor.com/api/agri/drone/location/drone/1/mission/1/location/35/32/2/battery/51.3",  json={"key": "value"})
             server_response = json.loads(req.text) #Convert server response to json
             lat = server_response['latitude']
             lon = server_response['longitude']
@@ -225,4 +281,6 @@ class TestLocation(TestCase):
         loc=Location(-LIMIT_NUMBER_LATITUDE,-LIMIT_NUMBER_LONGITUDE,0)
         loc.displayLocation()
         self.assertTrue(1)
+
+
 
