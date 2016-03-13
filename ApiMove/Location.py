@@ -2,6 +2,7 @@ __author__ = 'ReemAdi'
 
 LIMIT_LATITUDE = 90.0
 LIMIT_LONGITUDE = 180.0
+DEVIATION = 0.05
 
 
 class Location:
@@ -25,10 +26,10 @@ class Location:
             _longitude = float (_longitude)
         except ValueError:
             _longitude = 0
-        if _longitude<=LIMIT_LONGITUDE and _longitude>=-LIMIT_LONGITUDE:
+        if _longitude<=LIMIT_LONGITUDE and _longitude>=0:
             self.longitude = _longitude
-        elif _longitude<-LIMIT_LONGITUDE:
-            self.longitude = -LIMIT_LONGITUDE
+        elif _longitude<0:
+            self.longitude = 0
         else:
             self.longitude = LIMIT_LONGITUDE
 
@@ -73,21 +74,24 @@ class Location:
             _longitude = float (_longitude)
         except ValueError:
             _longitude = 0
-        if (_longitude <= LIMIT_LONGITUDE) and (_longitude >= -LIMIT_LONGITUDE):
+        if (_longitude <= LIMIT_LONGITUDE) and (_longitude >= 0):
             self.longitude = _longitude
-        elif _longitude<-LIMIT_LONGITUDE:
-            self.latitude = -LIMIT_LONGITUDE
+        elif _longitude<0:
+            self.longitude = 0
         else:
-            self.latitude = LIMIT_LONGITUDE
+            self.longitude = LIMIT_LONGITUDE
 
 
     def set_altitude(self, _altitude):
         try:
             self.altitude = float (_altitude)
+            if _altitude < 0:
+                self.altitude = 0
         except ValueError:
             self.altitude = 0
 
-	
+
+
     #######################################
     # Equals
     #######################################
@@ -97,14 +101,19 @@ class Location:
         else:
             return False
 
+    def is_right_alt(self, high_meter ):
+        if abs(high_meter - self.altitude)< DEVIATION :
+            return True
+        return False
+
 
     #######################################
     # Convert From Vehicle Location
     #######################################
     def setFromVehicleLocation(self, vecLoc):
-        self.latitude = vecLoc.lat
-        self.longitude = vecLoc.lon
-        self.altitude = vecLoc.alt
+        self.set_latitude(vecLoc.lat)
+        self.set_longitude(vecLoc.lon)
+        self.set_altitude(vecLoc.alt)
 
 
     #######################################
