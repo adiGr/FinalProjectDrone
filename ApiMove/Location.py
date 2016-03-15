@@ -38,6 +38,7 @@ class Location:
             self.altitude = float (_altitude)
         except ValueError:
             self.altitude = 0
+
     #######################################
     # Getters
     #######################################
@@ -106,7 +107,16 @@ class Location:
             return True
         return False
 
+    def is_equals_lat(self, lat ):
+        if abs(lat - self.latitude)< DEVIATION :
+            return True
+        return False
 
+
+    def is_equals_lon(self, lon ):
+        if abs(lon - self.longitude)< DEVIATION :
+            return True
+        return False
     #######################################
     # Convert From Vehicle Location
     #######################################
