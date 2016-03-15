@@ -3,12 +3,12 @@ import time
 __author__ = 'ReemAdi'
 import sys
 from Drone import Drone
+from dronekit_sitl import SITL
 from Battery import Battery
 
 
 def main():
     print "Start simulator (SITL)"
-    from dronekit_sitl import SITL
     sitl = SITL()
     sitl.download('copter', '3.3', verbose=True)
     sitl_args = ['-I0', '--model', 'quad', '--home=-35.363261,149.165230,584,353']
@@ -18,8 +18,8 @@ def main():
     from dronekit import connect, VehicleMode
 
     # Connect to the Vehicle.
-    print "Connecting to vehicle on: 'tcp:127.0.0.1:5760'"
-    """vehicle = connect('tcp:127.0.0.1:5760', wait_ready=True)
+    """print "Connecting to vehicle on: 'tcp:127.0.0.1:5760'"
+    vehicle = connect('tcp:127.0.0.1:5760', wait_ready=True)
 
     # Get some vehicle attributes (state)
     print "Get some vehicle attribute values:"
@@ -69,19 +69,21 @@ def main():
     vehicle.close()
     """
 
-    drone  = Drone('tcp:127.0.0.1:5760')
+    drone = Drone('tcp:127.0.0.1:5760')
     drone.take_off(2)
     print " global_relative_frame: %s\n" %  drone.vehicle.location.global_relative_frame
-    """drone.up(3)
-    print " global_relative_frame up drone: %s\n" %  drone.vehicle.location.global_relative_frame
-    drone.down(1)
-    print " global_relative_frame up drone: %s\n" %  drone.vehicle.location.global_relative_frame
-    drone.down(4)
-    print " global_relative_frame up drone: %s\n" %  drone.vehicle.location.global_relative_frame"""
+    #drone.up(3)
+    #print " global_relative_frame up drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.down(1)
+    #print " global_relative_frame down drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.down(4)
+    #print " global_relative_frame down drone: %s\n" %  drone.vehicle.location.global_relative_frame
     # Close vehicle object before exiting script
-    drone.forward(30)
-    print " global_relative_frame up drone: %s\n" %  drone.vehicle.location.global_relative_frame
-
+    print "the heading is : %s" % drone.vehicle.heading
+    #drone.forward(2)
+    print " global_relative_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.backwards(2)
+    print " global_relative_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
     # Shut down simulator
     sitl.stop()
     print("Completed")
