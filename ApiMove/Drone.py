@@ -10,14 +10,14 @@ DELAY = 0.5
 class Drone:
 
     def __init__(self,connect_string = '/dev/ttyAMA0'):
-        print 'Connecting to vehicle on: /dev/ttyAMA0'
+        print 'Connecting to vehicle on: '+connect_string
         self.vehicle = connect(connect_string,  wait_ready=True,baud=57600)
 
 
     def take_off(self,init_alt_in_meter):
         while not self.vehicle.is_armable:
             time.sleep(DELAY)
-            print "drone isn't arm-able"
+            print "Waiting for arming"
 
         #here the drone is armable and move to the next step
         self.vehicle.mode = VehicleMode("GUIDED")
@@ -49,17 +49,31 @@ class Drone:
         self.up(-init_alt_in_meter)
 
     def send_ned_velocity(self,velocity_x, velocity_y, velocity_z, duration):
-        pass 
+        pass
         """
 
 
-        # send command to vehicle on 1 Hz cycle
-        for x in range(0,duration):
-            self.vehicle.send_mavlink(msg)
-            time.sleep(1)
+    # send command to vehicle on 1 Hz cycle
+    for x in range(0,duration):
+        self.vehicle.send_mavlink(msg)
+        time.sleep(1)"""
 
     def forward(self,move_forward_in_meter):
-        self.send_ned_velocity(-2,0,0,10)
-        while True:
-            print "global relative_frame: %s" % self.vehicle.location.global_relative_frame"""
+        dest_location = Location()
+        loc1 = Location()
+        loc1.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
+        dest_location.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
+        add_lat = math.sin(self.vehicle.heading)*move_forward_in_meter
+        add_lon = math.cos(self.vehicle.heading)*move_forward_in_meter
+        dest_location.set_latitude(dest_location.get_latitude()+ add_lat)
+        dest_location.set_longitude(dest_location.get_longitude()+add_lon)
+        locationGlobal = LocationGlobal(dest_location.latitude,dest_location.longitude,dest_location.altitude)
+        print "this dest location global : %s" % locationGlobal
+        self.vehicle.simple_goto(locationGlobal)
+        while not ( loc1.is_equals_lat(dest_location.latitude) and loc1.is_equals_lon(dest_location.longitude)):
+            loc1.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
+
+    #def backwards(self,move_forward_in_meter):
+
+
 
