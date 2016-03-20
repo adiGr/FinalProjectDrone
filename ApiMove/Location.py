@@ -102,13 +102,13 @@ class Location:
         else:
             return False
 
-    def is_right_alt(self, high_meter ):
-        if abs(high_meter - self.altitude)< DEVIATION :
+    def is_right_alt(self, high_meter):
+        if abs(high_meter - self.altitude)< DEVIATION:
             return True
         return False
 
-    def is_equals_lat(self, lat ):
-        if abs(lat - self.latitude)< DEVIATION :
+    def is_equals_lat(self, lat):
+        if abs(lat - self.latitude) < DEVIATION:
             return True
         return False
 
