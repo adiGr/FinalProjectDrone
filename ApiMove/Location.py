@@ -103,20 +103,37 @@ class Location:
             return False
 
     def is_right_alt(self, high_meter):
+        try:
+            high_meter =float(high_meter)
+        except ValueError:
+            return False
         if abs(high_meter - self.altitude)< DEVIATION:
             return True
         return False
 
     def is_equals_lat(self, lat):
+        try:
+            lat =float(lat)
+        except ValueError:
+            return False
+        if lat > LIMIT_LATITUDE or lat <-LIMIT_LATITUDE:
+            lat = lat% LIMIT_LATITUDE
         if abs(lat - self.latitude) < DEVIATION:
             return True
         return False
 
 
-    def is_equals_lon(self, lon ):
-        if abs(lon - self.longitude)< DEVIATION :
+    def is_equals_lon(self, lon):
+        try:
+            lon =float(lon)
+        except ValueError:
+            return False
+        if lon > LIMIT_LONGITUDE or lon <0:
+            lon = lon% LIMIT_LATITUDE
+        if abs(lon - self.longitude)< DEVIATION:
             return True
         return False
+
     #######################################
     # Convert From Vehicle Location
     #######################################
