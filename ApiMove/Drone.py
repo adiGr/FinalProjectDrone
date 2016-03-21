@@ -92,10 +92,6 @@ class Drone:
         self.vehicle.simple_goto(location_global)
         while loc1.is_equals_lat(dest_location.latitude) is False or loc1.is_equals_lon(dest_location.longitude) is False:
             loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
-            #print "dest:lat:%f\tlong:%f" % (dest_location.get_latitude(),dest_location.get_longitude())
-            print "now: %s" % (self.vehicle.location.global_relative_frame)
-            time.sleep(10**DELAY)
-
 
         if move_forward_in_meter > 0:
             print "complete function forward"
