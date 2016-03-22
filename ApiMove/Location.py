@@ -118,7 +118,7 @@ class Location:
             return False
         if lat > LIMIT_LATITUDE or lat <-LIMIT_LATITUDE:
             lat = lat% LIMIT_LATITUDE
-        if abs(lat - self.latitude) < DEVIATION:
+        if abs(lat - self.latitude) < 0.00000005:
             return True
         return False
 
@@ -130,7 +130,7 @@ class Location:
             return False
         if lon > LIMIT_LONGITUDE or lon <0:
             lon = lon% LIMIT_LATITUDE
-        if abs(lon - self.longitude)< DEVIATION:
+        if abs(lon - self.longitude)< 0.00000005:
             return True
         return False
 
