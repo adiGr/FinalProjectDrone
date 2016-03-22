@@ -55,48 +55,28 @@ class Drone:
     def forward(self,move_forward_in_meter):
         dest_location = Location()
         loc1 = Location()
-        loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
-        dest_location.setFromVehicleLocation(self.vehicle.location.global_frame)
-        add_lat = math.sin(self.vehicle.heading)*move_forward_in_meter
-        add_lon = math.cos(self.vehicle.heading)*move_forward_in_meter
-        dest_location.set_latitude(dest_location.get_latitude()+ add_lat)
-        dest_location.set_longitude(dest_location.get_longitude()+add_lon)
-        location_global = LocationGlobal(dest_location.get_latitude(),dest_location.get_longitude(),dest_location.get_altitude())
-        print "dest: lat: %s  lon: %s alt: %s" % (location_global.lat,location_global.lon,location_global.alt)
-        print "now:lat:%f\tlong:%f" % (loc1.get_latitude(),loc1.get_longitude())
-        self.vehicle.simple_goto(location_global,groundspeed=100)
-        while loc1.is_equals_lat(dest_location.latitude) is False or loc1.is_equals_lon(dest_location.longitude) is False:
-            loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
-            #print "dest:lat:%f\tlong:%f" % (dest_location.get_latitude(),dest_location.get_longitude())
-            print "now: %s" % (self.vehicle.location.global_frame)
-            time.sleep(10**DELAY)
-
-
-        if move_forward_in_meter > 0:
-            print "complete function forward"
-        else :
-            print "complete function backwards"
-
-    def forward_relative(self,move_forward_in_meter):
-        dest_location = Location()
-        loc1 = Location()
         loc1.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
         dest_location.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
-        add_lat = math.sin(self.vehicle.heading)*move_forward_in_meter
-        add_lon = math.cos(self.vehicle.heading)*move_forward_in_meter
-        dest_location.set_latitude(dest_location.get_latitude()+ add_lat)
-        dest_location.set_longitude(dest_location.get_longitude()+add_lon)
-        location_global = LocationGlobal(dest_location.get_latitude(),dest_location.get_longitude(),dest_location.get_altitude())
+        add_lat = math.sin(self.vehicle.heading)*(move_forward_in_meter/100000.0)
+        add_lon = math.cos(self.vehicle.heading)*(move_forward_in_meter/100000.0)
+        dest_location.set_latitude(round(dest_location.get_latitude()+ add_lat,7))
+        dest_location.set_longitude(round(dest_location.get_longitude()+add_lon,7))
+        location_global = LocationGlobalRelative(dest_location.get_latitude(),dest_location.get_longitude(),dest_location.get_altitude())
         print "dest: lat: %s  lon: %s alt: %s" % (location_global.lat,location_global.lon,location_global.alt)
-        print "now:lat:%f\tlong:%f" % (loc1.get_latitude(),loc1.get_longitude())
-        self.vehicle.simple_goto(location_global)
-        while loc1.is_equals_lat(dest_location.latitude) is False or loc1.is_equals_lon(dest_location.longitude) is False:
-            loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
+        self.vehicle.airspeed=3
+        self.vehicle.simple_goto(location_global,groundspeed=100)
+        while True:
+            print "dest: %s" % (location_global)
+            print "now : %s \n" % (self.vehicle.location.global_relative_frame)
+            time.sleep(DELAY)
+            if abs(self.vehicle.location.global_relative_frame.lat-location_global.lat) < 0.0000001 or abs(self.vehicle.location.global_relative_frame.lon-location_global.lon) < 0.000001  :
+                break;
 
         if move_forward_in_meter > 0:
-            print "complete function forward"
+            print "complete function forward\n"
         else :
-            print "complete function backwards"
+            print "complete function backwards\n"
+
 
     def backwards(self,move_forward_in_meter):
         self.forward(-move_forward_in_meter)
@@ -116,12 +96,16 @@ class Drone:
         loc1 = Location()
         loc.setFromVehicleLocation(self.vehicle.location.global_frame)
         loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
-        loc.set_longitude(loc.get_longitude()+move_in_meter*math.cos(self.vehicle.heading+90))
-        loc.set_latitude(loc.get_latitude()+move_in_meter*math.sin(self.vehicle.heading+90))
+        loc.set_longitude(round(loc.get_longitude()+move_in_meter/100000.0*math.cos(self.vehicle.heading+45),7))  ############maybe 90 or 45 because of the angle
+        loc.set_latitude(round(loc.get_latitude()+move_in_meter/100000.0*math.sin(self.vehicle.heading+45),7)) ############maybe 90 or 45 because of the angle
         location_global = LocationGlobal(loc.latitude,loc.longitude,loc.altitude)
         self.vehicle.simple_goto(location_global)
-        while not loc1.is_equals_lat(loc.latitude):
-            loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
+        while True:
+            print "dest: %s" % (location_global)
+            print "now : %s \n" % (self.vehicle.location.global_relative_frame)
+            time.sleep(DELAY)
+            if abs(self.vehicle.location.global_relative_frame.lat-location_global.lat) < 0.0000001 or abs(self.vehicle.location.global_relative_frame.lon-location_global.lon) < 0.000001  :
+                break;
         if move_in_meter > 0:
             print "complete function right"
         else:
@@ -130,6 +114,4 @@ class Drone:
 
     def move_left(self,move_in_meter):
         self.move_right(-move_in_meter)
-
-
 
