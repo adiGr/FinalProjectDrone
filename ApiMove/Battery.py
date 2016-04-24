@@ -28,7 +28,7 @@ class Battery:
         if volt > 0:
             self.volt = volt
         else:
-            volt = 0
+            self.volt = 0
 
     def set_current(self,curr):
         if curr is None:
