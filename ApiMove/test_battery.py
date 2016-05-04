@@ -7,12 +7,13 @@ __author__ = 'ReemAdi'
 
 POSITIVE_NUMBER = 10
 NEGATIVE_NUMBER = -23
+CHARACTER = 'C'
+CHAR_NUMBER = '48'
 
 
 class bet:
-
-    def __init__(self,lat,lon,alt):
-        self.lat  = lat
+    def __init__(self, lat, lon, alt):
+        self.lat = lat
         self.lon = lon
         self.alt = alt
 
@@ -26,13 +27,20 @@ class TestBattery(TestCase):
         print "Connecting to vehicle on: 'tcp:127.0.0.1:5760'"
         vehicle = connect('tcp:127.0.0.1:5760', wait_ready=True)
         print " Battery: %s" % vehicle.battery
-        battery_test = Battery( vehicle.battery)
-        #check number negative the limit
+        battery_test = Battery(vehicle.battery)
+        # check number negative the limit
         battery_test.set_volt(NEGATIVE_NUMBER)
-        self.assertEqual(battery_test.volt,0)
-        #check number positive the limit
+        self.assertEqual(battery_test.volt, 0)
+        # check number positive the limit
         battery_test.set_volt(POSITIVE_NUMBER)
-        self.assertEqual(battery_test.get_volt(),POSITIVE_NUMBER)
-        #check ZERO
+        self.assertEqual(battery_test.get_volt(), POSITIVE_NUMBER)
+        # check ZERO
         battery_test.set_volt(0)
-        self.assertEqual(battery_test.get_volt(),0)
+        self.assertEqual(battery_test.get_volt(), 0)
+        #check char that non number
+        battery_test.set_volt(CHARACTER)
+        self.assertEqual(battery_test.get_volt(), 0)
+        #check char that  number
+        battery_test.set_volt(CHAR_NUMBER)
+        self.assertEqual(battery_test.get_volt(), int(CHAR_NUMBER))
+
