@@ -25,19 +25,31 @@ class Battery:
     # Setters                             #
     #######################################
     def set_volt(self,volt):
+        try:
+            volt = int(volt)
+        except ValueError:
+            volt = 0
         if volt > 0:
             self.volt = volt
         else:
             self.volt = 0
 
     def set_current(self,curr):
-        if curr is None:
+        try:
+            curr = int(curr)
+        except ValueError:
+            curr = 0
+        if curr is None or curr< 0:
             self.current = 0
         else:
             self.current = curr
 
     def set_level(self,lvl):
-        if lvl is None:
+        try:
+            lvl = int(lvl)
+        except ValueError:
+            lvl = 0
+        if lvl is None or lvl < 0:
             self.level = 0
         else:
             self.level = lvl
