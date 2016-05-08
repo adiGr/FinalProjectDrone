@@ -69,3 +69,32 @@ class TestBattery(TestCase):
         #check char that  number
         battery_test.set_level(CHAR_NUMBER)
         self.assertEqual(battery_test.get_level(), int(CHAR_NUMBER))
+
+
+    def test_set_current(self):
+        sitl = SITL()
+        sitl.download('copter', '3.3', verbose=True)
+        sitl_args = ['-I0', '--model', 'quad', '--home=-35.363261,149.165230,584,353']
+        sitl.launch(sitl_args, await_ready=True, restart=True)
+        print "Connecting to vehicle on: 'tcp:127.0.0.1:5760'"
+        vehicle = connect('tcp:127.0.0.1:5760', wait_ready=True)
+        print " Battery: %s" % vehicle.battery
+        battery_test = Battery(vehicle.battery)
+        # check number negative the limit
+        battery_test.set_current(NEGATIVE_NUMBER)
+        self.assertEqual(battery_test.current, 0)
+        # check number positive the limit
+        battery_test.set_current(POSITIVE_NUMBER)
+        self.assertEqual(battery_test.get_current(), POSITIVE_NUMBER)
+        # check ZERO
+        battery_test.set_current(0)
+        self.assertEqual(battery_test.get_current(), 0)
+        #check char that non number
+        battery_test.set_current(CHARACTER)
+        self.assertEqual(battery_test.get_current(), 0)
+        #check char that  number
+        battery_test.set_current(CHAR_NUMBER)
+        self.assertEqual(battery_test.get_current(), int(CHAR_NUMBER))
+
+  
+
