@@ -96,5 +96,70 @@ class TestBattery(TestCase):
         battery_test.set_current(CHAR_NUMBER)
         self.assertEqual(battery_test.get_current(), int(CHAR_NUMBER))
 
-  
 
+
+    def test_set_battery_from_vehicle(self):
+        # check number zero the limit
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,0,0)
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(NEGATIVE_NUMBER,0,0)
+        # check number NEGATIVE number one the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,NEGATIVE_NUMBER,0)
+        # check number NEGATIVE number two the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,0,NEGATIVE_NUMBER)
+        # check number NEGATIVE number three the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(POSITIVE_NUMBER,0,0)
+        # check number POSITIVE number one the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, POSITIVE_NUMBER)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,0,POSITIVE_NUMBER)
+        # check number POSITIVE number two the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, POSITIVE_NUMBER)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,POSITIVE_NUMBER,0)
+        # check number POSITIVE number three the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, POSITIVE_NUMBER)
+
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(CHAR_NUMBER,0,0)
+        # check number char number number one the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, int(CHAR_NUMBER))
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
