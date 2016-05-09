@@ -55,6 +55,7 @@ class Drone:
     def forward(self,move_forward_in_meter):
         dest_location = Location()
         loc1 = Location()
+        head = self.vehicle.heading
         loc1.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
         dest_location.setFromVehicleLocation(self.vehicle.location.global_relative_frame)
         add_lat = math.sin(self.vehicle.heading)*(move_forward_in_meter/100000.0)
@@ -63,14 +64,15 @@ class Drone:
         dest_location.set_longitude(round(dest_location.get_longitude()+add_lon,7))
         location_global = LocationGlobalRelative(dest_location.get_latitude(),dest_location.get_longitude(),dest_location.get_altitude())
         print "dest: lat: %s  lon: %s alt: %s" % (location_global.lat,location_global.lon,location_global.alt)
-        self.vehicle.airspeed=3
         self.vehicle.simple_goto(location_global,groundspeed=100)
         while True:
             print "dest: %s" % (location_global)
             print "now : %s \n" % (self.vehicle.location.global_relative_frame)
             time.sleep(DELAY)
-            if abs(self.vehicle.location.global_relative_frame.lat-location_global.lat) < 0.0000001 or abs(self.vehicle.location.global_relative_frame.lon-location_global.lon) < 0.000001  :
+            if abs(self.vehicle.location.global_relative_frame.lat-location_global.lat) < 0.0000001 and abs(self.vehicle.location.global_relative_frame.lon-location_global.lon) < 0.000001  :
                 break;
+            self.condition_yaw(head)
+            print "------------------------------heading:%s ------------------------------------" % head
 
         if move_forward_in_meter > 0:
             print "complete function forward\n"
@@ -91,9 +93,10 @@ class Drone:
         self.turn_right(-turn_left_in_degree)
 
 
-    def move_right(self,move_in_meter):
+    def right(self,move_in_meter):
         loc = Location()
         loc1 = Location()
+        head = self.vehicle.heading
         loc.setFromVehicleLocation(self.vehicle.location.global_frame)
         loc1.setFromVehicleLocation(self.vehicle.location.global_frame)
         loc.set_longitude(round(loc.get_longitude()+move_in_meter/100000.0*math.cos(self.vehicle.heading+45),7))  ############maybe 90 or 45 because of the angle
@@ -106,12 +109,80 @@ class Drone:
             time.sleep(DELAY)
             if abs(self.vehicle.location.global_relative_frame.lat-location_global.lat) < 0.0000001 or abs(self.vehicle.location.global_relative_frame.lon-location_global.lon) < 0.000001  :
                 break;
+            self.condition_yaw(head)
+            print "------------------------------heading:%s ------------------------------------" % head
+
         if move_in_meter > 0:
             print "complete function right"
         else:
             print "complete function left"
 
 
-    def move_left(self,move_in_meter):
-        self.move_right(-move_in_meter)
+    def left(self,move_in_meter):
+        self.right(-move_in_meter)
 
+
+
+    def condition_yaw(self,heading, relative=False):
+        if relative:
+            is_relative = 1 #yaw relative to direction of travel
+        else:
+            is_relative = 0 #yaw is an absolute angle
+        msg = self.vehicle.message_factory.command_long_encode(
+            0, 0,    # target system, target component
+            mavutil.mavlink.MAV_CMD_CONDITION_YAW, #command
+            0, #confirmation
+            heading,    # param 1, yaw in degrees
+            0,          # param 2, yaw speed deg/s
+            1,          # param 3, direction -1 ccw, 1 cw
+            is_relative, # param 4, relative offset 1, absolute angle 0
+            0, 0, 0)    # param 5 ~ 7 not used
+        # send command to vehicle
+        self.vehicle.send_mavlink(msg)
+
+
+    def move_forward(self,meter):
+        head = self.vehicle.heading
+        msg = self.vehicle.message_factory.set_position_target_local_ned_encode(
+        0,       # time_boot_ms (not used)
+        0, 0,    # target system, target component
+        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+        0b0000111111111000, # (only positions enabled)
+        meter, 0, 0, # x, y, z positions
+        0.1, 0, 0, # x, y, z velocity in m/s
+        0, 0, 0, # x, y, z acceleration
+        0, 0)    # yaw
+        # send command to vehicle
+        self.vehicle.send_mavlink(msg)
+        for x in range(0,abs(meter)):
+            self.condition_yaw(head)
+            time.sleep(2)
+
+
+    def move_backwards(self,move_forward_in_meter):
+        self.move_forward(-move_forward_in_meter)
+
+
+
+    def move_right(self,meter):
+        head = self.vehicle.heading
+        position_z=self.vehicle.location.global_frame.alt
+        position_z*=-1
+        msg = self.vehicle.message_factory.set_position_target_local_ned_encode(
+        0,       # time_boot_ms (not used)
+        0, 0,    # target system, target component
+        mavutil.mavlink.MAV_FRAME_LOCAL_NED, # frame
+        0b0000111111111000, # (only positions enabled)
+        0, meter,position_z, # x, y, z positions
+        0, 0, 0, # x, y, z velocity in m/s
+        0, 0, 0, # x, y, z acceleration
+        0, 0)    # yaw
+        # send command to vehicle
+        self.vehicle.send_mavlink(msg)
+        for x in range(0,abs(meter)):
+            self.condition_yaw(head)
+            time.sleep(2)
+
+
+    def move_left(self,move_forward_in_meter):
+        self.move_forward(-move_forward_in_meter)
