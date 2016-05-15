@@ -8,15 +8,15 @@ from Battery import Battery
 from dronekit import *
 
 def main():
+    #"""
     print "Start simulator (SITL)"
     sitl = SITL()
     sitl.download('copter', '3.3', verbose=True)
-    sitl_args = ['-I0', '--model', 'quad', '--home=-35.363261,149.165230,584,353']
+    sitl_args = ['-I0', '--model', 'quad', '--home=31.768923,35.193595,0,0']
     sitl.launch(sitl_args, await_ready=True, restart=True)
-
     # Import DroneKit-Python
-
     # Connect to the Vehicle.
+    #"""
     """
     print "Connecting to vehicle on: 'tcp:127.0.0.1:5760'"
     vehicle = connect('tcp:127.0.0.1:5760', wait_ready=True)
@@ -57,32 +57,47 @@ def main():
 
     vehicle.close()
     """
+
     drone = Drone('tcp:127.0.0.1:5760')
+    #drone = Drone("com3")
     #drone = Drone('udp:127.0.0.1:14550')
     print " global_relative_frame: %s\n" %  drone.vehicle.location.global_relative_frame
     print "the heading is : %s" % drone.vehicle.heading
     drone.take_off(2)
+    print "the heading is : %s" % drone.vehicle.heading
+
     print " global_relative_frame: %s\n" %  drone.vehicle.location.global_relative_frame
-    #drone.up(3)
-    #print " global_relative_frame: %s\n" %  drone.vehicle.location.global_relative_frame
-    #drone.down(1)
+    print " global_relative_frame: %s\n" %  drone.vehicle.location.global_relative_frame
     #print " global_relative_frame down drone: %s\n" %  drone.vehicle.location.global_relative_frame
     #drone.down(4)
     #print " global_relative_frame down drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    print " Battery: %s\n" % drone.vehicle.battery
+    print "#######################################################################################"
     print "the heading is : %s" % drone.vehicle.heading
-
-    print " global_relative_frame down drone: %s\n" %  drone.vehicle.location.global_relative_frame
-    #drone.forward(5)  # work!!!!!!
-    #drone.backwards(5)  # work!!!!!!
-
-    #print " global_relative_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.forward(2)  # work!!!!!!
+    #print " global_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.down(2)
+    #print " global_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.up(2)
+    #print " global_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.down(2)
+    #drone.move_forward(2)
+    #drone.move_right(2)
+    print "the heading is : %s" % drone.vehicle.heading
+    print "#######################################################################################"
+    print " global_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
+    #drone.move_backwards(3) #input: always positive number
+    #drone.backwards(2)  # work!!!!!!
+    drone.move_left(3)
+    print "the heading is : %s" % drone.vehicle.heading
+    print "#######################################################################################"
+    print " global_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
     #drone.forward(2)  #workkkkkk!!!!!!
     #drone.backwards(2)  # work!!!!!!!!
-
-    print " global_relative_frame forward drone: %s\n" %  drone.vehicle.location.global_relative_frame
-    #drone.move_right(10)  # workkk !!!!!!
-    #drone.move_right(-10)  # workkk !!!!!!
-    print " global_relative_frame: %s\n" %  drone.vehicle.location.global_relative_frame
+    #print " global_relative_frame forward drone: %s\n" %  drone.vehicle.location.global_frame
+    #drone.move_right(2)  # workkk !!!!!!
+    #drone.move_right(-5)  # workkk !!!!!!
+    #print " global_relative_frame: %s\n" %  drone.vehicle.location.global_frame
 
 
     # Close vehicle object before exiting script
