@@ -163,3 +163,42 @@ class TestBattery(TestCase):
         self.assertEqual(battery_test.volt, int(CHAR_NUMBER))
         self.assertEqual(battery_test.level, 0)
         self.assertEqual(battery_test.current, 0)
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,0,CHAR_NUMBER)
+        # check number char number number two the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, int(CHAR_NUMBER))
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,CHAR_NUMBER,0)
+        # check number char number number three the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, int(CHAR_NUMBER))
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(CHARACTER,0,0)
+        # check number char number one the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,CHARACTER,0)
+        # check number char number two the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
+
+        battery_test = Battery(bet(0,0,0))
+        battery_test_copy = bet(0,0,CHARACTER)
+        # check number char number three the limit
+        battery_test.set_battery_from_vehicle(battery_test_copy)
+        self.assertEqual(battery_test.volt, 0)
+        self.assertEqual(battery_test.level, 0)
+        self.assertEqual(battery_test.current, 0)
