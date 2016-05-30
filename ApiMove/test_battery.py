@@ -43,6 +43,7 @@ class TestBattery(TestCase):
         #check char that  number
         battery_test.set_volt(CHAR_NUMBER)
         self.assertEqual(battery_test.get_volt(), int(CHAR_NUMBER))
+        sitl.stop()
 
 
     def test_set_level(self):
@@ -69,6 +70,7 @@ class TestBattery(TestCase):
         #check char that  number
         battery_test.set_level(CHAR_NUMBER)
         self.assertEqual(battery_test.get_level(), int(CHAR_NUMBER))
+        sitl.stop()
 
 
     def test_set_current(self):
@@ -95,6 +97,7 @@ class TestBattery(TestCase):
         #check char that  number
         battery_test.set_current(CHAR_NUMBER)
         self.assertEqual(battery_test.get_current(), int(CHAR_NUMBER))
+        sitl.stop()
 
 
 
@@ -202,3 +205,31 @@ class TestBattery(TestCase):
         self.assertEqual(battery_test.volt, 0)
         self.assertEqual(battery_test.level, 0)
         self.assertEqual(battery_test.current, 0)
+
+    def test_if_low_battery_level(self):
+        # check number zero the limit
+        battery_test = Battery(bet(0,0,0))
+        self.assertTrue(battery_test.if_low_battery_level(),"battey low")
+
+        battery_test = Battery(bet(0,0,4))
+        self.assertTrue(battery_test.if_low_battery_level(),"battey low")
+
+        battery_test = Battery(bet(0,0,5))
+        self.assertTrue(battery_test.if_low_battery_level(),"battey low")
+
+        battery_test = Battery(bet(0,0,6))
+        self.assertFalse(battery_test.if_low_battery_level(),"battey low")
+
+    def test_if_full_battery_level(self):
+        # check number high limit
+        battery_test = Battery(bet(0,0,100))
+        self.assertTrue(battery_test.if_full_battery_level(),"full battey")
+        # check number up the limit
+        battery_test = Battery(bet(0,0,101))
+        self.assertTrue(battery_test.if_full_battery_level(),"full battey")
+      # check number low the limit
+        battery_test = Battery(bet(0,0,50))
+        self.assertFalse(battery_test.if_full_battery_level(),"full battey")
+      # check number low the limit (99)
+        battery_test = Battery(bet(0,0,99))
+        self.assertFalse(battery_test.if_full_battery_level(),"full battey")
