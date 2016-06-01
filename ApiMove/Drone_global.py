@@ -111,3 +111,17 @@ class Drone_global:
             0, 0, 0)    # param 5 ~ 7 not used
         # send command to vehicle
         self.vehicle.send_mavlink(msg)
+
+    def goto(self,dNorth, dEast):
+        currentLocation=self.vehicle.location.global_relative_frame
+        targetLocation=self.get_location_metres(currentLocation, dNorth, dEast)
+        targetDistance=self.get_distance_metres(currentLocation, targetLocation)
+        self.vehicle.simple_goto(targetLocation)
+
+        while self.vehicle.mode.name=="GUIDED": #Stop action if we are no longer in guided mode.
+            remainingDistance=self.get_distance_metres(self.vehicle.location.global_frame, targetLocation)
+            print "Distance to target: ", remainingDistance
+            if remainingDistance<=targetDistance*0.01: #Just below target, in case of undershoot.
+                print "Reached target"
+                break;
+            time.sleep(2)
