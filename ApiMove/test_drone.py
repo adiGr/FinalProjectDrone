@@ -542,7 +542,7 @@ class TestDrone(TestCase):
         sitl.stop()
         #self.assertTrue(True)
         """
-        """"
+
         sitl = SITL()
         sitl.download('copter', '3.3', verbose=True)
         sitl_args = ['-I0', '--model', 'quad', '--home=31.768923,35.193595,0,270']
@@ -556,7 +556,7 @@ class TestDrone(TestCase):
         drone.vehicle.close()
         sitl.stop()
         #self.assertTrue(True)
-        """
+
         """"
         sitl = SITL()
         sitl.download('copter', '3.3', verbose=True)
