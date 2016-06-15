@@ -34,6 +34,9 @@ class TestBattery(TestCase):
         # check number positive the limit
         battery_test.set_volt(POSITIVE_NUMBER)
         self.assertEqual(battery_test.get_volt(), POSITIVE_NUMBER)
+        # check number positive the limit
+        battery_test.set_volt(12.4)
+        self.assertEqual(battery_test.get_volt(), 12.4)
         # check ZERO
         battery_test.set_volt(0)
         self.assertEqual(battery_test.get_volt(), 0)
@@ -61,6 +64,13 @@ class TestBattery(TestCase):
         # check number positive the limit
         battery_test.set_level(POSITIVE_NUMBER)
         self.assertEqual(battery_test.get_level(), POSITIVE_NUMBER)
+
+        # check number positive not in the limit
+        battery_test.set_level(101)
+        self.assertEqual(battery_test.get_level(), 100)
+        # check float number positive not in the limit
+        battery_test.set_level(10.15)
+        self.assertEqual(battery_test.get_level(), 10)
         # check ZERO
         battery_test.set_level(0)
         self.assertEqual(battery_test.get_level(), 0)
