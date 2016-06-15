@@ -102,14 +102,6 @@ class Location:
         else:
             return False
 
-    def is_right_alt(self, high_meter):
-        try:
-            high_meter =float(high_meter)
-        except ValueError:
-            return False
-        if abs(high_meter - self.altitude)< DEVIATION:
-            return True
-        return False
 
     def is_equals_lat(self, lat):
         try:
@@ -118,7 +110,7 @@ class Location:
             return False
         if lat > LIMIT_LATITUDE or lat <-LIMIT_LATITUDE:
             lat = lat% LIMIT_LATITUDE
-        if abs(lat - self.latitude) < 0.00000005:
+        if abs(lat - self.latitude) < DEVIATION:
             return True
         return False
 
@@ -130,7 +122,19 @@ class Location:
             return False
         if lon > LIMIT_LONGITUDE or lon <0:
             lon = lon% LIMIT_LATITUDE
-        if abs(lon - self.longitude)< 0.00000005:
+        if abs(lon - self.longitude)< DEVIATION:
+            return True
+        return False
+
+
+    """the function get high meter and check if the location get to
+     the high with static deviation"""
+    def is_right_alt(self, high_meter):
+        try:
+            high_meter =float(high_meter)
+        except ValueError:
+            return False
+        if abs(high_meter - self.altitude)< DEVIATION:
             return True
         return False
 
