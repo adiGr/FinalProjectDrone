@@ -26,7 +26,7 @@ class Battery:
     #######################################
     def set_volt(self,volt):
         try:
-            volt = int(volt)
+            volt = float(volt)
         except ValueError:
             volt = 0
         if volt > 0:
@@ -36,7 +36,7 @@ class Battery:
 
     def set_current(self,curr):
         try:
-            curr = int(curr)
+            curr = float(curr)
         except ValueError:
             curr = 0
         if curr is None or curr< 0:
@@ -51,6 +51,8 @@ class Battery:
             lvl = 0
         if lvl is None or lvl < 0:
             self.level = 0
+        elif lvl>FULL_BATTERY_LEVEL:
+            self.level = FULL_BATTERY_LEVEL
         else:
             self.level = lvl
 
@@ -73,12 +75,15 @@ class Battery:
         return self.level
 
 
-
+    # the function check if the level is full then the const
+    # that the company will choose
     def if_full_battery_level(self):
         if self.level >= FULL_BATTERY_LEVEL:
             return True
         return False
 
+    # the function check if the level is less then the const
+    # that the company will choose
     def if_low_battery_level(self):
         if self.level is None:
             print "the autopilot cannot estimate the remaining battery"
