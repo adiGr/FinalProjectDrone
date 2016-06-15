@@ -250,20 +250,6 @@ class TestLocation(TestCase):
                         vec.lat == loc.latitude)
 
 
-    def test_setFromJSONLocation(self):
-        # Server connection
-        lat =10
-        lon=10
-        alt=10
-        try:
-            req = requests.post("http://agri-airscort-server.meteor.com/api/agri/drone/location/drone/1/mission/1/location/35/32/2/battery/51.3",  json={"key": "value"})
-            server_response = json.loads(req.text) #Convert server response to json
-            lat = server_response['latitude']
-            lon = server_response['longitude']
-            alt = server_response['altitude']
-        except Exception:
-            pass
-        self.assertTrue(lat == 0 and lon ==0 and alt == 0)
 
     def test_displayLocation(self):
         loc = Location()
