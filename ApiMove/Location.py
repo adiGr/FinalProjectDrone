@@ -1,9 +1,12 @@
+import json
+import requests
+
 __author__ = 'ReemAdi'
 
 LIMIT_LATITUDE = 90.0
 LIMIT_LONGITUDE = 180.0
 DEVIATION = 0.05
-
+SERVER = "http://agri-airscort-server.meteor.com/api/agri/drone/location/drone/1/mission/1/location/35/32/2/battery/51.3"
 
 class Location:
     #######################################
@@ -150,11 +153,16 @@ class Location:
     #######################################
     # Convert From JSON Location
     #######################################
-    def setFromJSONLocation(self, JSONLoc):
-        self.latitude = JSONLoc['latitude']
-        self.longitude = JSONLoc['longitude']
-        self.altitude = JSONLoc['altitude']
-
+    def setFromJSONLocation(self):
+        try:
+            req = requests.post(SERVER,  json={"key": "value"})
+            server_response = json.loads(req.text) #Convert server response to json
+            self.latitude = server_response['latitude']
+            self.longitude = server_response['longitude']
+            self.altitude = server_response['altitude']
+            return True
+        except Exception:
+            return False
 
     #######################################
     # Print Location
